@@ -1,0 +1,1 @@
+const fs=require('node:fs'),path=require('node:path');const root=path.resolve(__dirname,'..');fs.writeFileSync(path.join(root,'video-rules-main.js'),'// Generated from video-rules.js; regenerate with scripts/sync-video-rules.cjs.\n'+fs.readFileSync(path.join(root,'video-rules.js'),'utf8'));

@@ -1,0 +1,107 @@
+{
+  "manifest_version": 3,
+  "name": "Luma Translate",
+  "version": "0.29.17",
+  "description": "Bilingual web reading, image translation with local OCR, and context-aware video subtitle translation.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "reader-config.js",
+        "image-recipe.js",
+        "image-rules.js",
+        "user-rules.js",
+        "site-rules.js",
+        "translation-text.js",
+        "paragraph-codec.js",
+        "reader-ui.js",
+        "content.js",
+        "image-layout.js",
+        "image-content.js",
+        "video-rules.js",
+        "media-core.js",
+        "video-sources.js",
+        "video-reader.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://*.reddit.com/*",
+        "*://*.bilibili.com/*",
+        "*://*.wistia.net/*",
+        "*://*.wistia.com/*",
+        "*://*.ahrefs.com/*"
+      ],
+      "js": [
+        "video-rules-main.js",
+        "video-capture.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "*://manga.bilibili.com/*",
+        "*://shonenjumpplus.com/*"
+      ],
+      "js": [
+        "image-capture.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    }
+  ],
+  "commands": {
+    "toggle-translation": {
+      "suggested_key": {
+        "default": "Alt+A"
+      },
+      "description": "开启翻译或取消并恢复原文"
+    },
+    "translate-selection": {
+      "suggested_key": {
+        "default": "Alt+T"
+      },
+      "description": "翻译选中文字；未选中时检查并选择段落"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

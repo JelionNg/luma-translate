@@ -1,0 +1,46 @@
+.reader-translation{display:block!important;position:static!important;float:none!important;clear:both!important;width:auto!important;max-width:100%!important;min-width:0!important;margin:var(--reader-gap,.4em) 0 .15em!important;padding:0 0 0 .65em!important;border:0!important;border-inline-start:2px solid rgba(139,112,184,.32)!important;background:transparent!important;color:var(--reader-tone,inherit)!important;font-family:inherit!important;font-size:var(--reader-size,1em)!important;font-weight:500!important;line-height:1.5!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:inherit!important;opacity:1}
+
+[data-reader-paragraph]{display:block; margin:0; padding:0; border:0; font:inherit; color:inherit}
+
+.reader-retry{display:block!important;position:static!important;margin:5px 0!important;padding:3px 8px!important;border:1px solid #dbcdea!important;border-radius:6px!important;background:#faf7ff!important;color:#795c99!important;font:12px/1.5 system-ui!important;cursor:pointer!important}.reader-retry:focus-visible{outline:2px solid #8063ce!important;outline-offset:2px!important}
+
+.reader-unclamped{display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;max-height:none!important;overflow:visible!important}
+
+.reader-loading::before,.reader-loading::after{content:none!important;display:none!important}
+
+/* HF discussion rows own both the title and bottom-positioned metadata.
+   Activate only while a title contains our loading/result/retry node: clearing
+   translation restores the host layout without retaining per-row mutations. */
+html[data-reader-discussion-layout] .relative.h-16:has(> a h4 > [data-reader-target]) {
+  height:auto!important;min-height:4rem!important;
+}
+html[data-reader-discussion-layout] .relative.h-16:has(> a h4 > [data-reader-target]) > a {
+  height:auto!important;min-height:4rem!important;padding-bottom:1.9rem!important;box-sizing:border-box!important;
+}
+html[data-reader-discussion-layout] .relative.h-16 > a :is(div,h4):has([data-reader-target]) {
+  min-width:0!important;white-space:normal!important;overflow:visible!important;
+  text-overflow:clip!important;-webkit-line-clamp:unset!important;overflow-wrap:anywhere!important;
+}
+html[data-reader-discussion-layout] .relative.h-16 > a h4:has(> [data-reader-target]) {
+  width:100%!important;
+}
+
+/* Search metadata remains untouched; only translated result text gets this tone. */
+html[data-reader-search-layout] :is(#search,#rso) .reader-translation {
+  color:light-dark(#35383d,#dadce0)!important;font-size:14px!important;
+  line-height:1.6!important;margin-top:6px!important;font-weight:400!important;
+}
+html[data-reader-search-layout] :is(#search,#rso) h3 .reader-translation {
+  font-size:.85em!important;font-weight:500!important;
+}
+html[data-reader-search-layout] :is(#search,#rso) .reader-translation :is(em,b,strong,span) {
+  color:inherit!important;font-style:normal!important;
+}
+
+/* Icon + text headings remain flex rows; status/translation owns a new row. */
+:is(h1,h2,h3,h4,h5,h6):has(> [data-reader-target]) {
+  flex-wrap:wrap!important;
+}
+:is(h1,h2,h3,h4,h5,h6) > [data-reader-target] {
+  flex-basis:100%!important;min-width:0!important;box-sizing:border-box!important;
+}
