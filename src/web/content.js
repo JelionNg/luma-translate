@@ -4,7 +4,7 @@
   const isTop=window===window.top;
   const componentRoots=new Set();
   const baseSelector='p,h1,h2,h3,h4,h5,h6,li,blockquote,figcaption,td,th,div,section,article,[data-reader-paragraph]';
-  const baseExcluded='script,style,noscript,pre,code,textarea,input,select,button,svg,canvas,[contenteditable]:not([contenteditable="false"]),[translate="no"],[data-reader-ui],[data-reader-target],nav,[role="navigation"]';
+  const baseExcluded='script,style,noscript,pre,textarea,input,select,button,svg,canvas,[contenteditable]:not([contenteditable="false"]),[translate="no"],[data-reader-ui],[data-reader-target],nav,[role="navigation"]';
   let siteRule,selector,excluded,userRules={};
   let localHost,selectionHost,localEpoch=0,localProgress=null;
   function resolveRule(){
@@ -222,6 +222,7 @@ header{padding-bottom:12px;border-bottom:1px solid #edeaf3;gap:10px}header b{fon
   }
   function eligibilityReason(el){
     if(!el?.isConnected)return '节点已被网页移除';
+    if(el.closest('code'))return '行内代码随所属段落保留，不单独翻译';
     if(siteRule.blocked)return '当前页面规则禁止翻译（例如代码文件或设置页）';
     if(closestAcross(el,excluded))return '被排除：代码、控件、编辑区或站点忽略区域';
     if(el.closest('.reader-original')||el.querySelector('.reader-original'))return '已由原文/译文段落接管，避免重复翻译';

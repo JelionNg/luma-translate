@@ -6,7 +6,7 @@
       if(node.nodeType===Node.TEXT_NODE)return node.textContent;
       if(node.nodeType!==Node.ELEMENT_NODE||node.matches(excluded))return '';
       if(node.tagName==='BR')return '\n';
-      const allowed=['A','B','STRONG','I','EM','U','S','SUP','SUB'].includes(node.tagName);
+      const allowed=['A','B','STRONG','I','EM','U','S','SUP','SUB','CODE'].includes(node.tagName);
       let id;if(allowed){id=tags.length;tags.push(node);}
       const inner=[...node.childNodes].map(visit).join('');
       return allowed?'⟦R'+id+'⟧'+inner+'⟦/R'+id+'⟧':inner;
@@ -26,7 +26,7 @@
     for(const token of tokens){const m=/^⟦(\/?)R(\d+)⟧$/.exec(token);
       if(!m){stack.at(-1).append(document.createTextNode(token));continue;}
       const id=Number(m[2]);
-      if(m[1]){if(ids.pop()!==id||stack.length===1){valid=false;break;}stack.pop();}
+      if(m[1]){if(ids.pop()!==id||stack.length===1){valid=false;break;}const completed=stack.pop();if(tags[id]?.tagName==='CODE')completed.textContent=tags[id].textContent;}
       else{if(!tags[id]||seen.has(id)){valid=false;break;}seen.add(id);ids.push(id);
         const original=tags[id],node=document.createElement(original.tagName.toLowerCase());
         for(const [key,value]of Object.entries({display:'inline',margin:'0',padding:'0','text-indent':'0','white-space':'normal',float:'none',position:'static'}))node.style.setProperty(key,value,'important');

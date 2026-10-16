@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Luma Translate",
-  "version": "0.29.18",
+  "version": "0.29.19",
   "description": "Bilingual web reading, image translation with local OCR, and context-aware video subtitle translation.",
   "permissions": [
     "storage",

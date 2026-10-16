@@ -13,7 +13,7 @@
 
 **Your browser, your translation service.** Luma Translate brings bilingual web reading, image translation with local OCR, and context-aware video subtitles to desktop Chrome and Edge. Bring your own API key.
 
-Version **0.29.18** · Manifest V3 · Install from source; not yet available in extension stores.
+Version **0.29.19** · Manifest V3 · Install from source; not yet available in extension stores.
 
 ## Features
 

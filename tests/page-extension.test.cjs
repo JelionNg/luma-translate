@@ -2,7 +2,7 @@ const {chromium}=require('playwright'),path=require('node:path'),assert=require(
 (async()=>{const context=await chromium.launchPersistentContext('',{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,ignoreDefaultArgs:['--disable-extensions'],args:['--enable-unsafe-extension-debugging']});try{
 const cdp=await context.browser().newBrowserCDPSession();const {id}=await cdp.send('Extensions.loadUnpacked',{path:path.resolve(__dirname,'..')});
 const config=await context.newPage();await config.goto('chrome-extension://'+id+'/src/ui/options.html');await config.evaluate(()=>chrome.storage.sync.set({apiKey:'mock',endpoint:'https://api.deepseek.com',model:'deepseek-flash',autoTranslate:true,minInterval:0}));let calls=0;
-await context.route('https://api.deepseek.com/**',async r=>{calls++;const items=JSON.parse(r.request().postDataJSON().messages[1].content);await r.fulfill({contentType:'application/json',body:JSON.stringify({choices:[{message:{content:JSON.stringify(items.map(x=>({id:x.id,text:'这是正文的测试译文。'})))}}]})});});
+await context.route('https://api.deepseek.com/**',async r=>{calls++;const items=JSON.parse(r.request().postDataJSON().messages[1].content);await r.fulfill({contentType:'application/json',body:JSON.stringify({choices:[{message:{content:JSON.stringify(items.map(x=>({id:x.id,text:x.text?.includes('chrome://extensions')?'打开 ⟦R0⟧changed-by-model⟦/R0⟧ 或 ⟦R1⟧changed-by-model⟦/R1⟧。':'这是正文的测试译文。'})))}}]})});});
 await context.route('https://github.com/test/readme',r=>r.fulfill({contentType:'text/html',body:'<main><article class="markdown-body"><h1>Turn your model into a decision engine</h1>'+Array.from({length:6},(_,i)=>'<p>Paragraph '+i+' describes the architecture and implementation of a language model inference service.</p>').join('')+'</article></main>'}));
 const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('https://github.com/test/readme');
 try{await page.waitForFunction(()=>[...document.querySelectorAll('[data-reader-target]')].filter(el=>el.textContent.includes('这是正文的测试译文')).length>=7,{},{timeout:15000});}catch(e){console.log({calls,errors,body:await page.locator('body').innerText()});throw e;}
@@ -38,6 +38,12 @@ await page.evaluate(()=>{history.pushState({},'', '/test/project');document.quer
 await page.waitForFunction(()=>document.querySelectorAll('[data-component="SplitPageLayout.Pane"] .reader-translation').length===2,{},{timeout:15000});
 assert.equal(await page.locator('p > .reader-original').innerText(),'Utsuwa is an open-source alternative to Grok Companion.');
 console.log('PASS GitHub PR title and SPA navigation to nested About sidebar');
+await context.route('https://github.com/test/inline',r=>r.fulfill({contentType:'text/html',body:'<main><article class="markdown-body"><p>Open <code>chrome://extensions</code> or <code>edge://extensions</code>.</p><pre><code>Do not translate this code block</code></pre></article></main>'}));
+await page.goto('https://github.com/test/inline');
+await page.waitForFunction(()=>document.querySelector('p .reader-translation code'));
+assert.deepEqual(await page.locator('p .reader-translation code').allTextContents(),['chrome://extensions','edge://extensions']);
+assert.equal(await page.locator('pre .reader-translation').count(),0);
+console.log('PASS inline code included and restored verbatim, code blocks excluded');
 await context.route('https://www.google.com.hk/search?*',r=>r.fulfill({contentType:'text/html',body:`<style>.VwiC3b{display:-webkit-box;-webkit-line-clamp:2;overflow:hidden}em{color:red}</style><div id="search"><div id="rso">${Array.from({length:3},(_,i)=>`<div class="MjjYud"><div class="TbwUpd"><span class="VuuXrf">English source name</span><cite>https://example.com/result</cite></div><a href="https://example.com/${i}"><h3>Stratum result ${i}</h3></a><div class="IsZvec"><span class="VwiC3b" data-sncf="1">In geology, a stratum is a <em>layer of rock or sediment</em> characterized by its properties.</span></div></div>`).join('')}</div></div>`}));
 await page.goto('https://www.google.com.hk/search?q=strata');
 await page.waitForFunction(()=>document.querySelectorAll('#rso .reader-translation').length===6,{},{timeout:15000});
