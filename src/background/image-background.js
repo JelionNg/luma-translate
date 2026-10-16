@@ -1,4 +1,4 @@
-importScripts('image-recipe.js');
+importScripts('../image/image-recipe.js');
 // Image jobs own cancellation independently of pages, selections and other images.
 let imageDocumentCreation;
 const imageJobs=new Map();

@@ -1,4 +1,4 @@
-import '../image-recipe.js';
+import '../src/image/image-recipe.js';
 // Private extension document: no web-accessible resources or page message bridge.
 let worker, active, idle;
 const queue=[];let queueBytes=0;
@@ -15,7 +15,7 @@ function remember(key,result){const bytes=JSON.stringify(result).length*2;if(byt
 function release(){worker?.terminate();worker=null;clearTimeout(idle);}
 function finish(value){if(!active)return;const job=active;active=null;clearTimeout(job.timer);job.controller.abort();if(value.ok&&job.digest&&!value.cacheHit)remember(job.digest,value.result);job.reply({...value,elapsedMs:performance.now()-job.started});if(queue.length)queueMicrotask(drain);else idle=setTimeout(release,60000);}
 chrome.runtime.onMessage.addListener((m,s,reply)=>{
-  if(m.target!=='reader-image-engine'||s.id!==chrome.runtime.id||s.url!==chrome.runtime.getURL('background.js'))return;
+  if(m.target!=='reader-image-engine'||s.id!==chrome.runtime.id||s.url!==chrome.runtime.getURL('src/background/background.js'))return;
   if(m.type==='stop'){
     const index=queue.findIndex(j=>j.m.id===m.id);if(index>=0){const [job]=queue.splice(index,1);queueBytes-=job.cost;job.reply({ok:false,error:'已取消图片识别'});}
     if(active?.id===m.id){release();finish({ok:false,error:'已取消图片识别'});}reply({ok:true});return;

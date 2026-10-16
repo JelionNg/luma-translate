@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Luma Translate",
-  "version": "0.29.17",
+  "version": "0.29.18",
   "description": "Bilingual web reading, image translation with local OCR, and context-aware video subtitle translation.",
   "permissions": [
     "storage",
@@ -13,15 +13,15 @@
     "<all_urls>"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/ui/popup.html",
     "default_icon": {
       "16": "icons/16.png",
       "32": "icons/32.png"
     }
   },
-  "options_page": "options.html",
+  "options_page": "src/ui/options.html",
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background/background.js"
   },
   "content_scripts": [
     {
@@ -29,24 +29,24 @@
         "<all_urls>"
       ],
       "js": [
-        "reader-config.js",
-        "image-recipe.js",
-        "image-rules.js",
-        "user-rules.js",
-        "site-rules.js",
-        "translation-text.js",
-        "paragraph-codec.js",
-        "reader-ui.js",
-        "content.js",
-        "image-layout.js",
-        "image-content.js",
-        "video-rules.js",
-        "media-core.js",
-        "video-sources.js",
-        "video-reader.js"
+        "src/shared/reader-config.js",
+        "src/image/image-recipe.js",
+        "src/image/image-rules.js",
+        "src/shared/user-rules.js",
+        "src/web/site-rules.js",
+        "src/shared/translation-text.js",
+        "src/web/paragraph-codec.js",
+        "src/shared/reader-ui.js",
+        "src/web/content.js",
+        "src/image/image-layout.js",
+        "src/image/image-content.js",
+        "src/video/video-rules.js",
+        "src/video/media-core.js",
+        "src/video/video-sources.js",
+        "src/video/video-reader.js"
       ],
       "css": [
-        "content.css"
+        "src/web/content.css"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -61,8 +61,8 @@
         "*://*.ahrefs.com/*"
       ],
       "js": [
-        "video-rules-main.js",
-        "video-capture.js"
+        "src/video/video-rules-main.js",
+        "src/video/video-capture.js"
       ],
       "run_at": "document_start",
       "world": "MAIN",
@@ -74,7 +74,7 @@
         "*://shonenjumpplus.com/*"
       ],
       "js": [
-        "image-capture.js"
+        "src/image/image-capture.js"
       ],
       "run_at": "document_start",
       "world": "MAIN",

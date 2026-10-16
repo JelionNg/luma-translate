@@ -1,4 +1,4 @@
-importScripts('reader-config.js','translation-stream.js');
+importScripts('../shared/reader-config.js','../shared/translation-stream.js');
 const DEFAULTS=ReaderConfig.defaults;
 const pending = new Map(), waiting = [];
 const sessions=new Map();

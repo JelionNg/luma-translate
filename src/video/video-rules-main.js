@@ -1,4 +1,4 @@
-// Generated from video-rules.js; regenerate with scripts/sync-video-rules.cjs.
+// Generated from src/video/video-rules.js; regenerate with scripts/sync-video-rules.cjs.
 // Independent, declarative resource contracts. No executable vendor rules.
 (()=>{
  const rules=[

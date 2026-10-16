@@ -26,7 +26,7 @@ const action=await ui("const r=this.querySelector('#action').getBoundingClientRe
 for(let i=0;i<80;i++){if(await ui("return this.querySelector('#action').textContent")==='关闭')break;await new Promise(r=>setTimeout(r,100));}
 assert.equal(await ui("return this.querySelector('#note').textContent"),'');await ui("this.querySelector('#action').click()");await page.evaluate(()=>document.querySelector('#viewer').close());
 // Real public content-script requests: byte-keyed OCR cache, including changed bytes at the same URL.
-const sw=context.serviceWorkers().find(w=>w.url().endsWith('/background.js'));
+const sw=context.serviceWorkers().find(w=>w.url().endsWith('/src/background/background.js'));
 async function recognize(){return sw.evaluate(async url=>{const tab=(await chrome.tabs.query({})).find(t=>t.url?.startsWith(url));const [r]=await chrome.scripting.executeScript({target:{tabId:tab.id},func:async()=>{const r=await chrome.runtime.sendMessage({type:'reader-image-recognize',id:crypto.randomUUID(),url:document.querySelector('#photo').src});return {ok:r.ok,error:r.error,cacheHit:!!r.cacheHit,elapsedMs:r.elapsedMs,count:r.result?.regions.length};}});return r.result;},'http://localhost:'+server.address().port);}
 const warm=await recognize();assert(warm.ok,warm.error);assert.equal(warm.cacheHit,true);
 const originalFixture=fixture;fixture=Buffer.from(await config.evaluate(()=>{const c=document.createElement('canvas');c.width=320;c.height=200;const x=c.getContext('2d');x.fillStyle='white';x.fillRect(0,0,320,200);return c.toDataURL().split(',')[1]}),'base64');

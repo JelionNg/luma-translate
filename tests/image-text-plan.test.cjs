@@ -1,4 +1,4 @@
-const assert=require('node:assert/strict');require('../image-layout.js');
+const assert=require('node:assert/strict');require('../src/image/image-layout.js');
 const api=globalThis.ReaderImageLayout;
 const rect=(text,x,y,w,h,extra={})=>({text,polygon:[[x,y],[x+w,y],[x+w,y+h],[x,y+h]],...extra});
 const regions=[rect("IT'S NEVER QUIET ON",20,20,240,38,{textGroup:'curve-0'}),rect('THE WESTERN FRONT',12,50,260,40,{textGroup:'curve-0'}),rect('Save',300,20,50,20),rect('Cancel',360,20,60,20)];

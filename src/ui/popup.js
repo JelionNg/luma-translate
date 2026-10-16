@@ -5,8 +5,8 @@ async function send(type){
   try{return await chrome.tabs.sendMessage(tab.id,{type},{frameId:0});}
   catch{
     if(!/^https?:/.test(tab.url||''))throw Error('此页面不允许翻译，请打开普通网页');
-    await chrome.scripting.insertCSS({target:{tabId:tab.id,allFrames:true},files:['content.css']});
-    await chrome.scripting.executeScript({target:{tabId:tab.id,allFrames:true},files:['reader-config.js','image-rules.js','user-rules.js','site-rules.js','translation-text.js','paragraph-codec.js','reader-ui.js','content.js']});
+    await chrome.scripting.insertCSS({target:{tabId:tab.id,allFrames:true},files:['src/web/content.css']});
+    await chrome.scripting.executeScript({target:{tabId:tab.id,allFrames:true},files:['src/shared/reader-config.js','src/image/image-rules.js','src/shared/user-rules.js','src/web/site-rules.js','src/shared/translation-text.js','src/web/paragraph-codec.js','src/shared/reader-ui.js','src/web/content.js']});
     return chrome.tabs.sendMessage(tab.id,{type},{frameId:0});
   }
 }
@@ -37,7 +37,7 @@ $('imageOcr').onclick=()=>chrome.tabs.create({url:chrome.runtime.getURL('ocr/ind
 
 $('videoTranslate').onclick=async()=>{try{
  if(!tab?.id||!/^https?:/.test(tab.url||''))throw Error('请在视频所在网页打开');
- if(/(^|\.)(youtube|reddit)\.com$/.test(new URL(tab.url).hostname))await chrome.scripting.executeScript({target:{tabId:tab.id},world:'MAIN',files:['video-capture.js']});
- await chrome.scripting.executeScript({target:{tabId:tab.id},files:['video-rules.js','media-core.js','video-sources.js','video-reader.js']});
+ if(/(^|\.)(youtube|reddit)\.com$/.test(new URL(tab.url).hostname))await chrome.scripting.executeScript({target:{tabId:tab.id},world:'MAIN',files:['src/video/video-capture.js']});
+ await chrome.scripting.executeScript({target:{tabId:tab.id},files:['src/video/video-rules.js','src/video/media-core.js','src/video/video-sources.js','src/video/video-reader.js']});
  await chrome.tabs.sendMessage(tab.id,{type:'video-open'},{frameId:0});window.close();
 }catch(e){$('status').textContent=e.message;}};

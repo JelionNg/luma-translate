@@ -20,7 +20,7 @@ const row=id=>`<div class="relative h-16 w-full" id="row${id}"><a class="group f
   window.send=m=>listeners.forEach(f=>f(m,{},()=>{}));
  });
  for(const file of ['reader-config','user-rules','site-rules','translation-text','paragraph-codec','reader-ui','content'])await page.addScriptTag({path:`${root}/${file}.js`});
- await page.addStyleTag({path:root+'/content.css'});
+ await page.addStyleTag({path:root+'/src/web/content.css'});
  const check=async()=>{
   const boxes=await page.evaluate(()=>[...document.querySelectorAll('main > div')].map(row=>{
    const rect=el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,right:r.right}};

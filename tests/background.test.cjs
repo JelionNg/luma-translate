@@ -7,7 +7,7 @@ function harness(){
  const starts=[],updates=[];
  const config={apiKey:'test',endpoint:'https://api.deepseek.com',model:'deepseek-flash',targetLang:'简体中文',minInterval:0},local={};
  const chrome={tabs:{sendMessage:async(id,m)=>updates.push(m),onRemoved:{addListener(){}},onUpdated:{addListener(){}}},storage:{sync:{get:async d=>({...d,...config})},local:{get:async key=>Array.isArray(key)?Object.fromEntries(key.map(k=>[k,local[k]])):{...local},set:async v=>Object.assign(local,v),remove:async keys=>keys.forEach(k=>delete local[k])}},runtime:{onMessage:{addListener:f=>listener=f}},commands:{onCommand:{addListener(){}}}};
- vm.runInNewContext(fs.readFileSync(__dirname+'/../background.js','utf8'),{importScripts(){},...vm.runInNewContext(fs.readFileSync(__dirname+'/../reader-config.js','utf8')+';({ReaderConfig})'),chrome,TextEncoder,TextDecoder,readTranslationStream:vm.runInNewContext(fs.readFileSync(__dirname+'/../translation-stream.js','utf8')+';readTranslationStream',{TextDecoder}),crypto:require('node:crypto').webcrypto,AbortSignal,AbortController,setTimeout,clearTimeout,TypeError,fetch:async(url,options)=>{
+ vm.runInNewContext(fs.readFileSync(__dirname+'/../src/background/background.js','utf8'),{importScripts(){},...vm.runInNewContext(fs.readFileSync(__dirname+'/../src/shared/reader-config.js','utf8')+';({ReaderConfig})'),chrome,TextEncoder,TextDecoder,readTranslationStream:vm.runInNewContext(fs.readFileSync(__dirname+'/../src/shared/translation-stream.js','utf8')+';readTranslationStream',{TextDecoder}),crypto:require('node:crypto').webcrypto,AbortSignal,AbortController,setTimeout,clearTimeout,TypeError,fetch:async(url,options)=>{
  starts.push(Date.now());calls++;if(networkFailures-->0)throw new TypeError('Failed to fetch');active++;peak=Math.max(peak,active);assert.equal(url,'https://api.deepseek.com/chat/completions');
  const body=JSON.parse(options.body);prompts.push(body.messages[0].content);
  if(['deepseek-flash','deepseek-v4-flash','deepseek-v4-pro'].includes(config.model.trim()))assert.deepEqual(body.thinking,{type:'disabled'});else assert.equal(body.thinking,undefined);
@@ -33,7 +33,7 @@ test('暂时断网可恢复，连续断网最多三次',async()=>{const h=harnes
 test('划词在完整响应前显示流式增量，完成后才缓存',async()=>{const h=harness();let done=false;const request=h.local('selection').then(result=>{done=true;return result;});await new Promise(r=>setTimeout(r,35));assert.equal(done,false);assert.ok(h.updates.some(m=>m.text==='先出现'));const result=await request;assert.equal(result.items[0].text,'先出现后完成');const before=h.calls;await h.local('selection');assert.equal(h.calls,before);});
 
 test('SSE 支持 UTF-8/事件边界拆包，截断与取消不作为完成',async()=>{
- const read=vm.runInNewContext(fs.readFileSync(__dirname+'/../translation-stream.js','utf8')+';readTranslationStream',{TextDecoder});
+ const read=vm.runInNewContext(fs.readFileSync(__dirname+'/../src/shared/translation-stream.js','utf8')+';readTranslationStream',{TextDecoder});
  const make=value=>new Response(new ReadableStream({start(c){for(const byte of new TextEncoder().encode(value))c.enqueue(Uint8Array.of(byte));c.close();}}));
  const event='data: {"choices":[{"delta":{"content":"中文"}}]}\r\n\r\n';
  assert.equal(await read(make(event+'data: [DONE]\r\n\r\n'),new AbortController().signal,()=>{}),'中文');

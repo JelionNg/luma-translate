@@ -21,7 +21,7 @@
 
 **Your browser, your translation service.** Luma Translate brings bilingual web reading, image translation with local OCR, and context-aware video subtitles to desktop Chrome and Edge. Bring your own API key.
 
-Version **0.29.17** · Manifest V3 · Install from source; not yet available in extension stores.
+Version **0.29.18** · Manifest V3 · Install from source; not yet available in extension stores.
 
 ### Features
 
@@ -82,6 +82,25 @@ Settings and caches use browser storage. The active API key is stored in `chrome
 - OCR can struggle with curved or vertical text, small dense text, and complex backgrounds. Translation overlays do not perform generative background restoration.
 - Website changes can break adaptations. Speed and accuracy depend on your provider, network, and device. Not every site or video is supported.
 
+### Project structure
+
+```text
+manifest.json     Extension entry point / 扩展入口
+src/
+  background/     API requests and task scheduling / 请求与任务调度
+  web/            Web page reading and site rules / 网页翻译与适配
+  image/          Image translation and overlays / 图片翻译与呈现
+  video/          Subtitle extraction and translation / 字幕提取与翻译
+  shared/         Shared configuration and utilities / 公共配置与工具
+  ui/             Popup, settings and diagnostics / 弹窗、设置与诊断
+ocr/              Local OCR engine and asset manifest / 本地识别引擎
+icons/            Extension icons / 插件图标
+tests/            Regression tests / 回归测试
+scripts/          Asset setup and maintenance / 资源安装与维护
+```
+
+Load the repository root as the unpacked extension; `src/` is not a separate extension.
+
 ### Development and verification
 
 Runtime code needs no bundling. Run the basic tests with:
@@ -104,7 +123,7 @@ Project code is licensed under [Apache-2.0](LICENSE). Third-party models, the ch
 
 **在熟悉的网页里，使用你选择的翻译服务。** Luma Translate 支持网页双语阅读、本地 OCR 图片翻译和上下文字幕翻译，自备 API Key 即可使用。
 
-当前版本 **0.29.17** · 桌面 Chrome / Edge · Manifest V3 · 通过源码安装，尚未发布至扩展商店。
+当前版本 **0.29.18** · 桌面 Chrome / Edge · Manifest V3 · 通过源码安装，尚未发布至扩展商店。
 
 ### 功能
 
@@ -149,6 +168,10 @@ Project code is licensed under [Apache-2.0](LICENSE). Third-party models, the ch
 - 不包含 PDF 翻译。封闭组件、受保护媒体、鉴权图片和部分漫画页面可能无法读取。
 - OCR 对弯曲、竖排、密集小字和复杂背景仍可能识别不准；译文覆盖不是生成式背景修复。
 - 网站改版会影响适配。速度和准确性取决于模型服务、网络与设备；不保证所有网站或视频均受支持。
+
+### 目录结构
+
+源码按职责分为 `src/background`、`web`、`image`、`video`、`shared` 和 `ui`，OCR、图标、测试及维护脚本各自独立。加载扩展时仍选择包含 `manifest.json` 的根目录，不要选择 `src/`。
 
 ### 开发与验证
 

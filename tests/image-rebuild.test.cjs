@@ -3,7 +3,7 @@ const {chromium}=require('playwright'),path=require('node:path'),assert=require(
 (async()=>{const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});try{
  const page=await browser.newPage();const png=await page.evaluate(()=>{const c=document.createElement('canvas');c.width=200;c.height=100;const x=c.getContext('2d');x.fillStyle='red';x.fillRect(0,0,100,100);x.fillStyle='blue';x.fillRect(100,0,100,100);return c.toDataURL().split(',')[1];});await page.route('https://reader.test/',r=>r.fulfill({contentType:'text/html',body:'<canvas width="200" height="100"></canvas>'}));
  await page.route('https://cdn.test/source.svg',r=>r.fulfill({contentType:'image/png',body:Buffer.from(png,'base64')}));await page.goto('https://reader.test/');
- for(const f of ['image-capture.js','image-recipe.js'])await page.addScriptTag({path:path.join(__dirname,'..',f)});
+ for(const f of ['src/image/image-capture.js','src/image/image-recipe.js'])await page.addScriptTag({path:path.join(__dirname,'..',f)});
  await page.evaluate(async()=>{const img=new Image();img.src='https://cdn.test/source.svg';await img.decode();const ctx=document.querySelector('canvas').getContext('2d');ctx.drawImage(img,100,0,100,100,0,0,100,100);ctx.drawImage(img,0,0,100,100,100,0,100,100);});
  await page.waitForFunction(()=>document.querySelector('canvas').hasAttribute('data-reader-image-recipe'));
  const data=await page.evaluate(()=>{let error;try{document.querySelector('canvas').toDataURL();}catch(e){error=e.name;}return {error,recipe:JSON.parse(document.querySelector('canvas').getAttribute('data-reader-image-recipe'))};});assert.equal(data.error,'SecurityError');assert.equal(data.recipe.draws.length,2);

@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'..');
  const context=await chromium.launchPersistentContext('',{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,ignoreDefaultArgs:['--disable-extensions'],args:['--enable-unsafe-extension-debugging']});
  try{
  const cdp=await context.browser().newBrowserCDPSession(),{id}=await cdp.send('Extensions.loadUnpacked',{path:root});
- const settings=await context.newPage();await settings.goto('chrome-extension://'+id+'/popup.html');await settings.evaluate(()=>chrome.storage.sync.set({apiKey:'test-only',endpoint:'https://api.deepseek.com',model:'deepseek-flash',minInterval:0,autoTranslate:false}));
+ const settings=await context.newPage();await settings.goto('chrome-extension://'+id+'/src/ui/popup.html');await settings.evaluate(()=>chrome.storage.sync.set({apiKey:'test-only',endpoint:'https://api.deepseek.com',model:'deepseek-flash',minInterval:0,autoTranslate:false}));
  let releasePrefetch;const prefetchGate=new Promise(r=>releasePrefetch=r);let requests=[];await context.route('https://api.deepseek.com/**',async route=>{const b=route.request().postDataJSON(),items=JSON.parse(b.messages[1].content);requests.push(items);assert(items.length<=4);if(items.some(x=>x.text==='Hello world')){const reference=JSON.parse(b.messages[2].content).referenceOnly;assert(reference.after.includes('Next sentence'));assert(!reference.targets);}if(items.some(x=>x.text==='Next sentence'))await prefetchGate;await route.fulfill({contentType:'application/json',body:JSON.stringify({choices:[{message:{content:JSON.stringify(items.map(x=>({id:x.id,text:'译文：'+x.text})))}}]})});});
  await context.route('https://www.reddit.com/video-fixture*',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><body><div id="component"></div><script>const root=document.querySelector("#component").attachShadow({mode:"open"});root.innerHTML=\'<video style="width:640px;height:360px;background:#222"></video>\';window.player=root.querySelector("video");window.clock=0;window.track=player.addTextTrack("captions","English","en");track.addCue(new VTTCue(0,3,"Hello world"));track.addCue(new VTTCue(3,6,"Next sentence"));for(let i=2;i<5;i++)track.addCue(new VTTCue(i*3,(i+1)*3,"Future sentence "+i));track.mode="showing";</script>'}));
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('https://www.reddit.com/video-fixture');
@@ -93,7 +93,7 @@ const root=path.resolve(__dirname,'..');
  await page.evaluate(()=>document.querySelector('.ytp-subtitles-button').setAttribute('aria-pressed','false'));await page.waitForFunction(()=>document.querySelector('[data-reader-ui="video-subtitle"]').hidden);
  await page.evaluate(()=>history.pushState({},'', '/watch?v=next'));await page.waitForFunction(()=>!document.querySelector('[data-reader-ui="video-subtitle"]').shadowRoot.querySelector('#target').textContent);
  // Playback-window parsing preserves overlapping cues and sanitizes markup.
- const core=await settings.evaluate(async()=>{await import(chrome.runtime.getURL('media-core.js'));const c=ReaderMediaCore.parse('WEBVTT\n\n00:00.000 --> 00:30.000\nLong\n\n00:01.000 --> 00:02.000\nShort\n\n00:03.000 --> 00:10.000\n<b>Later</b>');return ReaderMediaCore.windowAt(c,5,0).map(x=>x.text)});assert.deepEqual(core,['Long','Later']);
+ const core=await settings.evaluate(async()=>{await import(chrome.runtime.getURL('src/video/media-core.js'));const c=ReaderMediaCore.parse('WEBVTT\n\n00:00.000 --> 00:30.000\nLong\n\n00:01.000 --> 00:02.000\nShort\n\n00:03.000 --> 00:10.000\n<b>Later</b>');return ReaderMediaCore.windowAt(c,5,0).map(x=>x.text)});assert.deepEqual(core,['Long','Later']);
  // Common player adapter: a burst produces one final phrase, without YouTube.
  const genericTexts=[];let firstGenericRequestAt=0;
  await context.route('https://api.deepseek.com/**',async route=>{const items=JSON.parse(route.request().postDataJSON().messages[1].content);genericTexts.push(...items.map(x=>x.text));firstGenericRequestAt=firstGenericRequestAt||Date.now();await route.fulfill({contentType:'application/json',body:JSON.stringify({choices:[{message:{content:JSON.stringify(items.map(x=>({id:x.id,text:'译文：'+x.text})))}}]})});});
@@ -139,7 +139,7 @@ const root=path.resolve(__dirname,'..');
  await target().filter({hasText:'译文：Bilibili full timeline'}).waitFor();
  await page.evaluate(()=>{const v=document.querySelector('video');v.currentTime=4;v.dispatchEvent(new Event('seeking'))});
  await target().filter({hasText:'译文：Next Bilibili cue'}).waitFor();
- const contracts=await settings.evaluate(async()=>{await import(chrome.runtime.getURL('video-rules.js'));
+ const contracts=await settings.evaluate(async()=>{await import(chrome.runtime.getURL('src/video/video-rules.js'));
   const r=ReaderVideoRules;
   const page='https://www.youtube.com/watch?v=one';
   const a=r.resource(page,'https://www.youtube.com/api/timedtext?v=one&lang=en');
@@ -164,7 +164,7 @@ const root=path.resolve(__dirname,'..');
   window.broken=false;window.callsAfterLoss=0;window.postMessage=()=>{};
   window.chrome={runtime:{id:'fixture',onMessage:{addListener(){}},sendMessage:()=>{if(broken){callsAfterLoss++;throw Error('Extension context invalidated.')}return Promise.resolve({ok:true})}},storage:{onChanged:{addListener(){}}}};
  });
- await stale.addScriptTag({path:root+'/video-rules.js'});await stale.addScriptTag({path:root+'/media-core.js'});await stale.addScriptTag({path:root+'/video-sources.js'});await stale.addScriptTag({path:root+'/video-reader.js'});
+ await stale.addScriptTag({path:root+'/src/video/video-rules.js'});await stale.addScriptTag({path:root+'/src/video/media-core.js'});await stale.addScriptTag({path:root+'/src/video/video-sources.js'});await stale.addScriptTag({path:root+'/src/video/video-reader.js'});
  await stale.locator('[data-reader-ui=video-launcher] button').click();
  await stale.evaluate(()=>{broken=true;document.querySelector('video').dispatchEvent(new Event('seeking'))});
  await stale.waitForFunction(()=>!document.querySelector('[data-reader-ui=video]')&&!document.querySelector('[data-reader-ui=video-launcher]'));
