@@ -13,7 +13,7 @@
 
 **Your browser, your translation service.** Luma Translate brings bilingual web reading, image translation with local OCR, and context-aware video subtitles to desktop Chrome and Edge. Bring your own API key.
 
-Version **0.29.19** · Manifest V3 · Install from source; not yet available in extension stores.
+Version **0.30.0** · Manifest V3 · Install from source; not yet available in extension stores.
 
 ## Features
 
@@ -48,6 +48,10 @@ Version **0.29.19** · Manifest V3 · Install from source; not yet available in 
 
 The default configuration targets DeepSeek. Change the model in settings to one supported by your provider. Downloading OCR assets requires an internet connection; afterward, OCR runs locally in the browser. Text translation still requires your configured API.
 
+## PDF reader
+
+Open **PDF 对照阅读** from the extension popup and choose a PDF. Click **翻译可见页** to translate visible pages as you scroll. The original is on the left; hover or focus a translated paragraph on the right to highlight its source lines. Use **暂停** to stop translation. Parsing runs in your browser; extracted text is sent to your configured translation API. The right pane reflows text for reading rather than reproducing the original PDF layout.
+
 ## Usage
 
 | Action | How |
@@ -70,7 +74,7 @@ Settings and caches use browser storage. The active API key is stored in `chrome
 ## Limitations
 
 - Video translation requires accessible subtitles; speech recognition for videos without subtitles is not included.
-- PDF translation is not included. Closed components, protected media, authenticated images, and some manga pages may be inaccessible.
+- PDF side-by-side reading supports text-based files with paragraph translation and linked source highlighting. Scanned pages and complex tables/formulas are not yet supported. Closed components, protected media, authenticated images, and some manga pages may be inaccessible.
 - OCR can struggle with curved or vertical text, small dense text, and complex backgrounds. Translation overlays do not perform generative background restoration.
 - Website changes can break adaptations. Speed and accuracy depend on your provider, network, and device. Not every site or video is supported.
 

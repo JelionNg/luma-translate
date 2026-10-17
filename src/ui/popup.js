@@ -41,3 +41,5 @@ $('videoTranslate').onclick=async()=>{try{
  await chrome.scripting.executeScript({target:{tabId:tab.id},files:['src/video/video-rules.js','src/video/media-core.js','src/video/video-sources.js','src/video/video-reader.js']});
  await chrome.tabs.sendMessage(tab.id,{type:'video-open'},{frameId:0});window.close();
 }catch(e){$('status').textContent=e.message;}};
+
+$('pdfReader').onclick=()=>chrome.tabs.create({url:chrome.runtime.getURL('src/pdf/index.html')}).then(()=>window.close());

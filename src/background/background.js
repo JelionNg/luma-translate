@@ -186,3 +186,5 @@ chrome.tabs.onUpdated.addListener((tabId,change)=>{if(change.url)chrome.tabs.sen
 importScripts('image-background.js');
 
 importScripts('video-background.js');
+
+importScripts('pdf-background.js');
