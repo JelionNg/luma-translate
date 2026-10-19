@@ -50,7 +50,7 @@ The default configuration targets DeepSeek. Change the model in settings to one 
 
 ## PDF reader
 
-Open **PDF 对照阅读** from the extension popup and choose a PDF. Click **翻译可见页** to translate visible pages as you scroll. The original is on the left; hover or focus a translated paragraph on the right to highlight its source lines. Use **暂停** to stop translation. Parsing runs in your browser; extracted text is sent to your configured translation API. The right pane reflows text for reading rather than reproducing the original PDF layout.
+Open **PDF 对照阅读** from the extension popup and choose a PDF. Click **翻译可见页** to translate visible pages as you scroll. The original is on the left; select a word or phrase within a translated paragraph to highlight a short source excerpt. Single characters do not trigger highlighting. Literal matches are local; cross-language phrases use an on-demand request to the configured model and cache the result. Uncertain or oversized excerpts stay unhighlighted. Clear the selection or press Esc to remove the highlight. Use **暂停** to stop translation. Parsing runs in your browser; extracted text is sent to your configured translation API. The right pane preserves page dimensions, columns, headings and graphics, with natural paragraph flow inside text regions. Typography adapts within each region; unusually long translations remain scrollable without covering neighbouring content. Detected figure/table interiors, algorithms and display equations retain their original rendering; captions and surrounding prose are translated.
 
 ## Usage
 

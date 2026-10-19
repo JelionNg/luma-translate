@@ -1,0 +1,5 @@
+// One policy version owns PDF translation style and its cache invalidation.
+globalThis.PdfPolicy=Object.freeze({
+ version:'pdf-source-spacing-v6',
+ instructions:'Use one consistent, faithful and natural academic translation style throughout the document. Restructure sentences only for natural target-language grammar; do not paraphrase freely, embellish, summarize, omit or shorten facts to fit the layout. Preserve every personal name exactly as written in the source, including authors, cited researchers and people mentioned in prose; never transliterate or translate personal names. Use established target-language names for institutions and places consistently; otherwise retain their original names. Translate equivalent affiliations and addresses using the same terminology and component order. Preserve every department, institution, city, state, country, postal code, affiliation number, email and identifier completely. Country names must be complete (for example USA becomes 美国 in Simplified Chinese, never 美). User terminology mappings take precedence for technical terms, but personal names remain unchanged.'
+});

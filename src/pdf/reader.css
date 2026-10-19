@@ -1,1 +1,44 @@
-*{box-sizing:border-box}body{margin:0;background:#f2f3f7;color:#252638;font:14px system-ui,sans-serif}header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;padding:14px 24px;background:#ffffffed;border-bottom:1px solid #e4e5ed;backdrop-filter:blur(16px)}.brand{display:flex;align-items:center;gap:8px;margin-right:16px}.brand img{width:28px}.brand span{font-weight:400;color:#777}button,select,.open{font:inherit;border:1px solid #dedee9;border-radius:9px;background:white;padding:8px 12px;cursor:pointer}button:disabled{opacity:.45;cursor:default}#translate,.open{background:#6d57ce;color:white;border-color:transparent}#status{font-size:12px;color:#646476;margin-left:auto;max-width:32vw}main{padding:24px}.empty{text-align:center;margin:18vh auto;color:#454258}.empty h1{font-size:30px;font-weight:600}.hint{color:#868193}.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;max-width:1500px;margin:0 auto 28px;align-items:start}.column{min-width:0}.caption{font-size:12px;color:#77788a;padding:0 0 10px 4px}.paper{position:relative;background:white;box-shadow:0 3px 18px #2421450b;border:1px solid #e5e5ed;border-radius:3px;overflow:hidden;aspect-ratio:var(--ratio)}canvas{display:block;width:100%;height:100%}.highlight{position:absolute;inset:0;pointer-events:none}.highlight i{position:absolute;background:#b9a3ff55;border-bottom:1px solid #9274e799;border-radius:2px}.translation{background:white;min-height:100%;padding:6% 7%;border:1px solid #e5e5ed;box-shadow:0 3px 18px #2421450b;border-radius:3px}.block{display:block;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 16px;padding:8px 10px;border-radius:7px;line-height:1.8;outline:none}.block:hover,.block:focus{background:#f3efff}.block.pending{color:#8a859b}.block.pending::before{content:'';display:inline-block;width:10px;height:10px;border:2px solid #d9d0f4;border-top-color:#8265d1;border-radius:50%;animation:spin 1s linear infinite;margin-right:8px}.block.error{color:#aa4d42;cursor:pointer}.note{color:#8a859b;padding:24px;line-height:1.8}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:750px){header{gap:6px;padding:10px;flex-wrap:wrap}#status{max-width:none}main{padding:10px}.pair{gap:8px}.translation{padding:8px}.block{padding:5px;font-size:13px}.brand{margin-right:0}}
+*{box-sizing:border-box}
+body{margin:0;background:#f2f3f7;color:#252638;font:14px system-ui,sans-serif}
+header{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;padding:14px 24px;background:#ffffffed;border-bottom:1px solid #e4e5ed;backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:8px;margin-right:16px}.brand img{width:28px}.brand span{font-weight:400;color:#777}
+button,select,.open{font:inherit;border:1px solid #dedee9;border-radius:9px;background:white;padding:8px 12px;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}#translate,.open{background:#6d57ce;color:white;border-color:transparent}
+#status{font-size:12px;color:#646476;margin-left:auto;max-width:32vw}
+main{padding:24px}.empty{text-align:center;margin:18vh auto;color:#454258}.empty h1{font-size:30px;font-weight:600}.hint{color:#868193}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;max-width:1500px;margin:0 auto 28px;align-items:start}
+.column{min-width:0}.column>.caption{font-size:12px;color:#77788a;padding:0 0 10px 4px}
+.paper,.translation{position:relative;aspect-ratio:var(--ratio);background:white;box-shadow:0 3px 18px #2421450b;border:1px solid #e5e5ed;border-radius:3px;overflow:hidden}
+canvas{display:block;width:100%;height:100%}.translation>canvas{position:absolute;inset:0}
+.highlight,.text-layer{position:absolute;inset:0}.highlight{pointer-events:none}
+.highlight i{position:absolute;background:#b9a3ff55;border-bottom:1px solid #9274e799;border-radius:2px}
+/* Anchored regions keep page structure; paragraphs flow together inside each region. */
+.region{position:absolute;overflow:hidden;color:#22212a;scrollbar-width:thin;scrollbar-color:#bbb5ca transparent;outline:none}
+.region-flow{display:flow-root;width:100%;font-kerning:normal;font-variant-numeric:lining-nums;word-break:normal;overflow-wrap:break-word;line-break:strict}
+.block{display:block;position:static;margin:0;padding:0;white-space:normal;outline:none;text-align-last:auto;hyphens:auto;overflow-wrap:break-word}
+.block+.block{margin-top:var(--paragraph-gap)}
+.body .block+.block{text-indent:2em}
+.body .block{text-align-last:start;text-wrap:pretty}
+.region.title .block,.region.heading .block{font-weight:700;text-wrap:balance}
+.region.metadata .block{font-weight:400;text-wrap:balance}.region.metadata sup{font-size:.7em;line-height:0;vertical-align:super}
+.region.label .block{hyphens:none}
+.region.caption .block,.region.footnote .block{text-align-last:start}
+.block:focus-visible{outline:1px solid #b9a3ff55;outline-offset:2px}
+.text-layer ::selection{background:#b9a3ff66}
+.region.overflowing{overflow:auto;box-shadow:inset 0 -1px #bcb5cd55;overscroll-behavior:contain}
+.region.overflowing:hover,.region.overflowing:focus-visible{box-shadow:inset 0 -2px #a18acb88}
+.block.pending{color:#8a859b;text-align:start!important;text-indent:0;font-family:system-ui,sans-serif;font-weight:400}
+.block.pending::before{content:'';display:inline-block;width:.65em;height:.65em;border:1.5px solid #d9d0f4;border-top-color:#8265d1;border-radius:50%;animation:spin 1s linear infinite;margin-right:.35em}
+.block.error{color:#aa4d42;cursor:pointer;text-indent:0}
+.note{color:#8a859b;padding:24px;line-height:1.8}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.block.pending::before{animation:none}}
+@media(max-width:750px){header{gap:6px;padding:10px;flex-wrap:wrap}#status{max-width:none}main{padding:10px}.pair{gap:8px}.brand{margin-right:0}}
+
+.block canvas.inline-math{display:inline-block;max-width:100%;object-fit:contain;margin:0 .12em;pointer-events:none}
+
+/* Temporary PDF.js layout for word measurement; never participates in reading. */
+
+.pdf-excerpt-measure{position:fixed;left:-20000px;top:0;visibility:hidden;pointer-events:none;line-height:1;text-size-adjust:none;overflow:hidden}
+.pdf-excerpt-measure span{position:absolute;white-space:pre;transform-origin:0 0;font-size:var(--font-height);transform:rotate(var(--rotate,0deg)) scaleX(var(--scale-x,1));font-kerning:none}
+.pdf-excerpt-measure br{display:none}
